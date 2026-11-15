@@ -1,4 +1,4 @@
 :HL["/cardiosim/_next/static/chunks/05bgvjk13stpy.css","style"]
 2:[["children",{"s":"__PAGE__","h":160}]]
 1:[["children",{"s":"/_not-found","h":96,"c":"$Q2"}]]
-0:{"b":"LVClf-eE4NOAwddwFhdaI","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
+0:{"b":"sOTHy7LOzSZa313GUq3CK","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
