@@ -8,7 +8,7 @@ import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber"
 import { ContactShadows, Environment, Lightformer, useGLTF } from "@react-three/drei";
 import { Suspense, useEffect, useImperativeHandle, useMemo, useRef, useState, type Ref } from "react";
 import * as THREE from "three";
-import { MODEL_PATH, MODEL_YAW_DEG, asset, sutureMarkers, type SutureMarker } from "@/config/site";
+import { MODEL_PATH, MODEL_RECOLOR, MODEL_YAW_DEG, asset, sutureMarkers, type SutureMarker } from "@/config/site";
 
 /**
  * Interactive viewer for the CardioSim heart.
@@ -55,7 +55,7 @@ type Props = {
   label: string;
 };
 
-const SIZE = 2.2; // world height the model is normalised to
+const SIZE = 2.1; // world size the model's largest dimension is normalised to
 const BASE_DIST = 6.2;
 const MIN_ZOOM = 0.42;
 const MAX_ZOOM = 1.3;
@@ -121,7 +121,7 @@ function Heart({
     const box = new THREE.Box3().setFromObject(turned);
     const size = box.getSize(new THREE.Vector3());
     const centre = box.getCenter(new THREE.Vector3());
-    const s = SIZE / size.y;
+    const s = SIZE / Math.max(size.x, size.y, size.z);
     turned.position.copy(centre).multiplyScalar(-s);
     turned.scale.setScalar(s);
 
@@ -129,17 +129,42 @@ function Heart({
       const mesh = o as THREE.Mesh;
       if (!mesh.isMesh) return;
       const src = mesh.material as THREE.MeshStandardMaterial;
-      mesh.material = new THREE.MeshPhysicalMaterial({
+      const mat = new THREE.MeshPhysicalMaterial({
         map: src.map ?? null,
         color: src.map ? 0xffffff : src.color,
         normalMap: src.normalMap ?? null,
-        normalScale: new THREE.Vector2(1.15, 1.15),
-        roughness: 0.5,
+        normalScale: new THREE.Vector2(1.5, 1.5),
+        roughness: 0.58,
         metalness: 0,
-        clearcoat: 0.18,
-        clearcoatRoughness: 0.55,
-        envMapIntensity: 0.55,
+        clearcoat: 0.12,
+        clearcoatRoughness: 0.6,
+        envMapIntensity: 0.45,
       });
+      // The product has exactly two colours. A generated texture drifts
+      // (washed red, pink-tinted white), so each texel is snapped to the real
+      // red or the real white by its saturation, keeping the texture's shading.
+      if (MODEL_RECOLOR && src.map) {
+        const red = new THREE.Color(MODEL_RECOLOR.red);
+        const white = new THREE.Color(MODEL_RECOLOR.white);
+        const v3 = (c: THREE.Color) => `vec3(${c.r.toFixed(4)}, ${c.g.toFixed(4)}, ${c.b.toFixed(4)})`;
+        mat.onBeforeCompile = (shader) => {
+          shader.fragmentShader = shader.fragmentShader.replace(
+            "#include <map_fragment>",
+            `#include <map_fragment>
+            {
+              vec3 c = diffuseColor.rgb;
+              float mx = max(c.r, max(c.g, c.b));
+              float mn = min(c.r, min(c.g, c.b));
+              float sat = (mx - mn) / max(mx, 1e-4);
+              float isRed = smoothstep(0.4, 0.62, sat);
+              vec3 asRed = ${v3(red)} * clamp(0.55 + 0.55 * mx, 0.7, 1.08);
+              vec3 asWhite = ${v3(white)} * clamp(0.35 + 0.7 * mn, 0.75, 1.0);
+              diffuseColor.rgb = mix(asWhite, asRed, isRed);
+            }`,
+          );
+        };
+      }
+      mesh.material = mat;
     });
 
     const wrapper = new THREE.Group();
@@ -346,8 +371,8 @@ function Bounds({ half }: { half: THREE.Vector3 }) {
 function Studio() {
   return (
     <>
-      <ambientLight intensity={0.25} />
-      <directionalLight position={[-3.5, 4.5, 4]} intensity={1.5} />
+      <ambientLight intensity={0.18} />
+      <directionalLight position={[-3.5, 4.5, 4]} intensity={1.25} />
       <directionalLight position={[4, 1.5, 2.5]} intensity={0.35} />
       <directionalLight position={[0, 3, -5]} intensity={0.4} />
       {/* Procedural softbox studio: no HDR download. */}
@@ -372,8 +397,8 @@ export default function HeartCanvas({
   captureZoom = false,
   scrollYaw,
   intro = true,
-  distance = 1,
-  lift = 0,
+  distance = 1.1,
+  lift = 0.06,
   active = true,
   onReady,
   className,
@@ -535,7 +560,7 @@ export default function HeartCanvas({
             distance={distance}
             lift={lift}
           />
-          <ContactShadows position={[0, -1.32, 0]} opacity={0.32} scale={7} blur={2.6} far={3} resolution={512} color="#3a2024" frames={1} />
+          <ContactShadows position={[0, -1.12, 0]} opacity={0.26} scale={5.2} blur={2.8} far={3} resolution={512} color="#3a2024" frames={1} />
         </Suspense>
       </Canvas>
     </div>

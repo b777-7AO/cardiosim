@@ -10,14 +10,14 @@ import "./globals.css";
 const geist = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 
 const description =
-  "CardioSim is an anatomical silicone heart for surgical suturing practice. Explore the model in 3D and order online.";
+  "CardioSim is a silicone heart training model for practising cardiac suturing outside the operating room. See it in 3D and order online.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://b777-7ao.github.io"),
-  title: { default: "CardioSim: anatomical silicone heart for suturing practice", template: "%s | CardioSim" },
+  title: { default: "CardioSim: silicone heart model for suturing practice", template: "%s | CardioSim" },
   description,
   openGraph: {
-    title: "CardioSim Anatomical Silicone Heart",
+    title: "CardioSim Heart Suturing Practice Model",
     description,
     images: [{ url: asset("/images/og.jpg"), width: 1200, height: 630 }],
     type: "website",

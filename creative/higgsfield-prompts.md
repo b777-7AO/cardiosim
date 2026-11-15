@@ -1,123 +1,89 @@
 # CardioSim: Higgsfield prompt library
 
-Production prompts for the CardioSim campaign assets. Every prompt describes the same object. Do not vary the product block.
+Prompts for CardioSim product visuals. The real product is the source of truth: Higgsfield changes the setting and the light, never the object.
 
-## Before you generate
+## Rules before you generate
 
-1. **Always attach a reference.** Use `creative/reference/heart-ref-01.png` (or, once it exists, a photograph of the manufactured product) as the image reference for every still, and as the start frame for every video. Text-only generation drifts in geometry between shots.
-2. **Stills first, video second.** Generate and approve the still, then animate that exact still. This is what keeps the heart identical across scenes.
-3. **Check each result against the product rules** at the end of this file before it goes on the site.
+1. **Always attach the real photographs** in `creative/product-photos/` as image references (front: `03-front-table.jpg` and `01-front-workshop.jpg`, back: `04-back-table.jpg`). Never generate from text alone.
+2. **Stills first, video second.** Approve a still, then animate that exact still as the start frame.
+3. **Compare every result with the photographs** before it goes on the site. Reject it if the shape was smoothed, idealised or given extra anatomy.
 
-Models used for the assets already in this repo: GPT Image 2.6 for stills, Tripo H3.1 image-to-3D for the GLB. For video, use an image-to-video model with a start frame (Seedance or Kling).
+Models used for the assets in this repo: GPT Image 2.6 for stills. Check the README for which image-to-3D model produced the GLB. For video, use an image-to-video model with a start frame (Seedance or Kling).
 
 ## Product block (paste into every prompt)
 
-> A single anatomical silicone human heart surgical training model, complete and uncut. The entire heart body (ventricles, atria, auricles, surface vessels, pulmonary trunk and vein stubs) is one uniform deep natural medical red matte silicone. Only one element has a different colour: the large central aorta with its arch and three short branch stubs is clean matte white silicone. Realistic manufactured cast silicone with fine surface texture and natural anatomical folds. Same geometry as the reference image.
+> Exactly the object in the reference photos: a bright vivid red moulded silicone heart-shaped suturing training model. Reproduce its real geometry, silhouette and proportions exactly: simplified heart body, a short wide hollow white silicone cylinder (open tube with a thick wall) standing in the top centre, one solid red cylindrical stub on the top left, one red cylindrical stub on the top right with a small side nub, a diagonal ridge running across the front, and one thin white line inlaid vertically on the front right side. The back is flatter, entirely red, with raised rectangular bands and a round opening at the top. Keep the visible moulded, layered surface texture and the slightly handmade character.
 
 ## Negative block (paste into every prompt)
 
-> No blue or purple vessels, no yellow fat, no additional colours, no labels or text, no stand, no extra components, no glow, no particles, no smoke, no lens flare, no wet gloss, no cartoon or stylised anatomy, no deformation, no change of shape between frames.
+> Do not add vessels, veins, branches, an aortic arch or any anatomical detail that is not in the reference. Do not smooth or idealise the shape. No blue or purple, no extra colours, no labels or text, no stand, no glow, no particles, no smoke, no lens flare, no wet gloss, no deformation, no change of shape between frames.
 
 ---
 
-## 1. Cinematic hero product reveal
+## 1. Hero product shot on white
 
-| | |
-|---|---|
-| Type | Video, image-to-video from the approved hero still |
-| Duration / ratio | 6 s, 16:9 (crop-safe to 3:2) |
-| Placement | Optional intro above the hero. Plays once, then the page shows the interactive 3D heart in the same front three-quarter pose. |
+Still, 1:1. In repo: `creative/reference/front-01.png`. Placement: hero poster while the 3D model loads, practice-areas picture, purchase section, cart thumbnail.
 
-**Prompt**
+> Professional studio product photograph of [Product block], from the same front three-quarter angle as the first reference. Only change the setting: seamless pure white studio background, soft even professional lighting, gentle soft contact shadow beneath, whole object in frame with generous margin, sharp focus, true-to-life vivid red. [Negative block]
 
-> [Product block] The heart is suspended in a pristine, nearly white studio. It begins almost lost in soft white light and gradually resolves as the light settles. The camera makes one slow, perfectly smooth arc of about 30 degrees around the heart at a constant distance, ending on a front three-quarter view with the white aorta clearly visible at the top. Macro product cinematography, 85mm lens, shallow but sufficient depth of field, soft directional key light from the upper left, gentle fill, faint soft shadow below. The heart itself does not move, beat or deform. [Negative block]
+**Back view** (`creative/reference/back-01.png`): same prompt with the back photograph as the only reference and "seen from the same back angle as the reference. Entirely red from this side, no white parts visible."
 
-**Notes:** End frame must match `heart-ref-01.png` so the cut to the 3D viewer is not visible. Export WebM (VP9) and MP4 (H.264), under 2 MB each, with a WebP poster of the last frame.
+## 2. Slow rotating model
 
-## 2. Seamless rotating heart loop
+Video, image-to-video, 8 s, 1:1. Start frame and end frame: the approved hero still. Placement: fallback for the 3D viewer, social posts.
 
-| | |
-|---|---|
-| Type | Video, image-to-video with identical start and end frame |
-| Duration / ratio | 8 s, 1:1 |
-| Placement | Fallback for the 3D viewer on devices without WebGL, and for social posts. |
+> [Product block] The model stands centred against a seamless pure white background and turns exactly 360 degrees around its vertical axis at constant speed, like an object on a turntable, showing the front with the white line, then the flatter red back with the raised bands, then the front again. Locked-off camera, 85mm lens, whole object in frame with generous margin. Soft even studio light that stays fixed while the object turns, soft shadow beneath. The last frame is identical to the first. The object stays rigid. [Negative block]
 
-**Prompt**
+**Note:** attach the back still as an additional reference. If the model invents a back, record the loop from the 3D viewer on the site instead.
 
-> [Product block] The heart floats centred against a seamless pure white background and rotates exactly 360 degrees around its vertical axis at constant speed, like an object on a turntable. Locked-off camera, 85mm lens, whole object in frame with generous margin. Soft even studio light that stays fixed while the object turns, very soft faint shadow below. The last frame is identical to the first frame. The object stays rigid. [Negative block]
+## 3. Macro close-up of the silicone surface
 
-**Notes:** Supply the same still as both start frame and end frame. If the model cannot hold the back of the heart consistent, render the loop from the GLB instead (it is the same object by construction).
+Still, 4:3 (optional 5 s push-in, 16:9). In repo: `creative/reference/macro-01.png`. Placement: inset picture in the product section.
 
-## 3. Macro silicone surface close-up
+> Macro studio product photograph of [Product block]. Close-up on the front right side where the thin white line is inlaid vertically in the red silicone, with the edge of the white hollow cylinder softly out of focus in the upper left corner. Show the real moulded, layered, slightly rough surface texture exactly as in the reference. 100mm macro lens, shallow depth of field, soft directional studio light raking from the left, clean white background at the edges, true-to-life vivid red. No hands, no tools, no thread. [Negative block]
 
-| | |
-|---|---|
-| Type | Still (optional 5 s slow push-in) |
-| Ratio | 4:3 still, 16:9 video |
-| Placement | Inset image in "Designed for deliberate practice". In repo: `creative/reference/macro-01.png`. |
+Video variant: "The camera pushes in very slowly by about 10 percent. Nothing else moves."
 
-**Prompt**
+## 4. Minimal training scene with gloved hands
 
-> Extreme macro product photograph of the exact silicone heart from the reference image. Close-up on the front ventricular surface where the raised red surface vessels branch, with the edge of the white silicone aorta meeting the red body in the upper corner of the frame, softly out of focus. Deep red matte cast silicone with fine surface texture, subtle mould grain and soft anatomical folds clearly visible. 100mm macro lens, shallow depth of field, soft directional studio light raking from the left to reveal texture, clean white background visible at the edge. [Negative block] No hands, no tools, no sutures.
+Still, 3:2. **Not on the site yet.** Use only once it is confirmed where on the model stitches are placed and with which instruments.
 
-**Video variant:** "The camera pushes in very slowly by about 10 percent. Nothing else moves."
+> [Product block] The model stands on a plain white training surface. Two hands in plain light-blue nitrile gloves practise suturing on it: one hand holds a needle holder with a small curved needle, the other steadies the model. A short neat row of dark suture thread is being placed at **[CONFIRMED AREA]**. Tight, calm close-up from slightly above, 90mm lens, soft overhead light, clean pale background, no faces. Controlled, precise, unhurried. No blood, no fluids, no operating theatre, no dramatic lighting, no glowing thread. [Negative block]
 
-## 4. Medical suturing practice imagery
+## 5. Product ad stills
 
-| | |
-|---|---|
-| Type | Still |
-| Ratio | 3:2 |
-| Placement | **Not on the site yet.** Use only after the product team has confirmed which area is stitched and which technique is shown. |
+**Presentation, standing** (4:3). In repo: `creative/reference/presentation-01.png`. Placement: main picture in the product section.
 
-**Prompt**
+> Professional commercial product photograph of [Product block], standing on a seamless matte white laboratory surface exactly as it stands in the references. Slightly lower camera than the reference, 85mm lens, object in the right half of a wide frame with calm empty white space on the left, pale grey-white background, soft directional key light from the upper left, gentle contact shadow, very subtle reflection. No props, no hands. [Negative block]
 
-> [Product block] The heart rests on a plain white training surface. Two hands in plain light-blue nitrile gloves practise suturing on it: one hand holds a needle holder with a small curved suture needle, the other steadies the model with forceps. A single neat row of dark suture thread is being placed on **[CONFIRMED AREA]**. Tight, calm close-up from slightly above, 90mm lens, soft overhead training-room light, clean pale background, no faces. Controlled, precise, unhurried. [Negative block] No blood, no fluids, no operating theatre, no dramatic lighting, no glowing thread, no cut-open tissue.
+**From above** (1:1), for a detail of the open top:
 
-**Gate:** replace `[CONFIRMED AREA]` with the validated practice zone. Do not publish with a guessed location.
+> Studio product photograph of [Product block] seen from directly above at a slight angle, looking into the open white cylinder between the two red stubs. Seamless white background, soft even light, soft shadow. [Negative block]
 
-## 5. Premium product photography
+## 6. Mobile vertical composition
 
-Two stills. Both are in the repo.
+Step 1, still (9:16):
 
-**5a. Hero, floating** (`creative/reference/heart-ref-01.png`, 1:1). Placement: hero poster while the 3D model loads, order section, cart thumbnail, social preview.
+> [Product block] standing in the upper two thirds of a tall vertical frame against a seamless pure white background, front three-quarter view, clear space above the white cylinder, the lower third of the frame empty white for text. Soft directional studio light from the upper left, soft shadow beneath. [Negative block]
 
-> Studio product photograph of [Product block] floating centred against a seamless pure white background. Front three-quarter view, whole object in frame with generous margin. Soft even diffuse studio lighting, very soft faint shadow, high detail, sharp focus across the whole object. [Negative block]
+Step 2, video from that still (5 s, 9:16):
 
-**5b. Presentation, resting** (`creative/reference/presentation-01.png`, 4:3). Placement: main image in "Designed for deliberate practice".
-
-> The exact silicone heart from the reference image, unchanged geometry and colours, resting naturally on its side on a seamless matte white laboratory surface, pale grey-white studio background, no visible horizon. Professional commercial product photography, 85mm lens, soft directional key light from the upper left, gentle contact shadow, very subtle surface reflection. Calm empty space on the left of the frame. [Negative block] No props, no hands.
-
-## 6. Mobile vertical cinematic composition
-
-| | |
-|---|---|
-| Type | Video, image-to-video from a 9:16 still |
-| Duration / ratio | 5 s, 9:16 |
-| Placement | Phone-only intro or social story. On the site, show it only below 640 px and only if the 3D viewer is not used there. |
-
-**Step 1, still (9:16):**
-
-> [Product block] floating in the upper two thirds of a tall vertical frame against a seamless pure white background, front three-quarter view, the white aorta near the top with clear space above it, the lower third of the frame empty white for text. Soft directional studio light from the upper left, faint soft shadow. [Negative block]
-
-**Step 2, video from that still:**
-
-> The camera rises very slowly from the apex of the heart to the white aorta, a smooth vertical move of about 15 percent of the frame height, while the heart turns 15 degrees toward the viewer. Soft studio light stays fixed. The heart stays rigid. [Negative block]
+> The camera rises very slowly from the base of the model to the white cylinder, a smooth vertical move of about 15 percent of the frame height, while the model turns 15 degrees toward the viewer. The light stays fixed. The model stays rigid. [Negative block]
 
 ---
 
-## Product rules (check every asset)
+## Checklist for every asset
 
-- Red anatomical heart body.
-- One white central vessel. No other coloured vessels.
-- No components that are not part of the product.
-- Same geometry in every shot.
-- No stylised anatomy, no glowing sutures, no implausible deformation.
-- Nothing that shows a procedure or practice area the product team has not confirmed.
+- Bright red body, simplified heart shape.
+- One hollow white cylinder at the top centre.
+- One thin white line on the front right.
+- Red stubs at the top, nothing else added.
+- Moulded surface texture kept.
+- Nothing that shows a procedure or practice area that has not been confirmed.
 
 ## Web delivery
 
 - Video: WebM plus MP4, muted, `playsinline`, `preload="none"` below the fold, poster in WebP/AVIF.
 - No autoplay when `prefers-reduced-motion: reduce` is set: show the poster.
-- Never load a hero video and the 3D model at the same time on phones: pick one.
+- Never load a hero video and the 3D model at the same time on phones.
 - Stills: run `node scripts/build-images.mjs` to produce the WebP/AVIF files in `public/images`.

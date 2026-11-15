@@ -62,9 +62,9 @@ export function CartDrawer() {
         {quantity === 0 ? (
           <div className="flex flex-1 flex-col items-start justify-center px-6">
             <p className="text-lg font-medium tracking-[-0.015em]">Your cart is empty.</p>
-            <p className="mt-2 text-[0.9375rem] text-mute">Add the CardioSim heart from the order section.</p>
+            <p className="mt-2 text-[0.9375rem] text-mute">Add the CardioSim practice model from the purchase section.</p>
             <a href="#order" onClick={() => setOpen(false)} className="btn btn-ink mt-6">
-              Go to order section
+              Go to purchase section
             </a>
           </div>
         ) : (

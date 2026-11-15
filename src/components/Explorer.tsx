@@ -62,6 +62,20 @@ export function Explorer() {
     });
   };
 
+  // The practice-areas section below can ask the viewer to show one area.
+  const section = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const onArea = (e: Event) => {
+      const id = (e as CustomEvent<string>).detail;
+      setView(detailViews.find((v) => v.showMarkers) ?? detailViews[0]);
+      setMarkersOn(true);
+      setSelected(id);
+      section.current?.scrollIntoView({ block: "start" });
+    };
+    window.addEventListener("cardiosim:area", onArea);
+    return () => window.removeEventListener("cardiosim:area", onArea);
+  }, []);
+
   // Fullscreen is a fixed overlay: it works on phones where the Fullscreen
   // API does not, and Escape closes it.
   useEffect(() => {
@@ -77,12 +91,12 @@ export function Explorer() {
   }, [full]);
 
   return (
-    <section id="explorer" className="border-y border-line bg-paper py-20 lg:py-28">
+    <section id="explorer" ref={section} className="border-y border-line bg-paper py-20 lg:py-28">
       <div className="frame">
         <div className="grid items-end gap-6 lg:grid-cols-12">
-          <h2 className="h-section lg:col-span-6">Examine every detail.</h2>
+          <h2 className="h-section lg:col-span-6">See it from every side.</h2>
           <p className="lede lg:col-span-5 lg:col-start-8">
-            Turn the model in any direction, move in close on the silicone surface and switch on the suture areas.
+            Turn the model to see the front, the back and the open top, move in close on the surface and switch on the practice areas.
           </p>
         </div>
 
@@ -96,7 +110,7 @@ export function Explorer() {
           <div className={`relative grid lg:grid-cols-[15.5rem_1fr] ${full ? "min-h-0 flex-1 grid-rows-[1fr_auto] lg:grid-rows-1" : "lg:h-[min(84svh,50rem)]"}`}>
             {/* Detail views */}
             <div className="order-2 border-t border-line lg:order-1 lg:border-r lg:border-t-0">
-              <p className="hidden px-5 pb-3 pt-5 text-sm font-medium lg:block">Explore the details</p>
+              <p className="hidden px-5 pb-3 pt-5 text-sm font-medium lg:block">Views</p>
               <ul className="no-scrollbar flex overflow-x-auto px-3 py-3 lg:block lg:px-0 lg:py-0" role="list">
                 {detailViews.map((v) => {
                   const on = v.id === view.id && !selected;
@@ -134,15 +148,15 @@ export function Explorer() {
               <LazyHeart
                 handle={heart}
                 intro={false}
-                distance={1.16}
-                lift={0.12}
+                distance={1.34}
+                lift={0.16}
                 autoRotate={view.id === "full" && !markersOn}
                 showMarkers={markersOn}
                 showBounds={!!view.showBounds && !selected}
                 selectedMarker={selected}
                 onSelectMarker={setSelected}
                 captureZoom={full}
-                label="3D explorer for the CardioSim silicone heart. Drag or use the arrow keys to rotate, plus and minus to zoom."
+                label="3D view of the CardioSim practice model. Drag or use the arrow keys to rotate, plus and minus to zoom."
                 className="absolute inset-0"
               />
 
@@ -166,7 +180,7 @@ export function Explorer() {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      {!marker.validated && <span className="tag mb-2.5">Demonstration point</span>}
+                      <span className="tag mb-2.5">{marker.validated ? marker.kind : "Illustrative practice area"}</span>
                       <h3 className="text-base font-medium tracking-[-0.01em]">{marker.name}</h3>
                     </div>
                     <button
@@ -180,8 +194,8 @@ export function Explorer() {
                   </div>
                   <dl className="mt-3 space-y-2.5 text-[0.8125rem] leading-relaxed">
                     <div>
-                      <dt className="text-mute">Training purpose</dt>
-                      <dd>{marker.purpose}</dd>
+                      <dt className="text-mute">Type</dt>
+                      <dd>{marker.kind}</dd>
                     </div>
                     <div>
                       <dt className="text-mute">Area</dt>
@@ -227,7 +241,7 @@ export function Explorer() {
                     }`}
                   >
                     <IconPoint />
-                    {markersOn ? "Hide Suture Areas" : "Show Suture Areas"}
+                    {markersOn ? "Hide Practice Areas" : "Show Practice Areas"}
                   </button>
                   {!full && (
                     <>
@@ -244,8 +258,8 @@ export function Explorer() {
         </div>
 
         <p className="mt-4 text-[0.8125rem] text-mute">
-          Drag to rotate. Use the buttons to zoom, or scroll and pinch in fullscreen. Suture areas are demonstration
-          points until the practice zones are confirmed by the product team.
+          Drag to rotate. Use the buttons to zoom, or scroll and pinch in fullscreen. The 3D model is a visualisation
+          built from photographs of the actual product.
         </p>
       </div>
     </section>

@@ -1,18 +1,18 @@
 /**
- * CardioSim mark: a red heart body without the greeting-card cleft, the white
- * central vessel cut through it as an arch, and one blue suture point.
+ * CardioSim mark, drawn from the product itself: a red heart form, the white
+ * vessel opening as a ring, and a row of blue stitch points.
  * The same geometry lives in /public/brand as standalone SVG files.
  */
 export function LogoMark({ size = 28 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true">
-      <path
-        fill="#BC2435"
-        d="M21 3.5C12 3.5 5 9.5 5 18.5c0 9 6.5 15 13.5 18C27.500 33.5 35 27.5 35 18.5 35 9.5 29.5 3.5 21 3.5z"
-      />
-      <path d="M14.5 25v-9.5a5.500 5.500 0 0 1 11 0v2.5" fill="none" stroke="#fff" strokeWidth="3.4" strokeLinecap="round" />
-      <circle cx="25.5" cy="24.5" r="3.3" fill="#fff" />
-      <circle cx="25.5" cy="24.5" r="1.9" fill="#245A80" />
+      <path fill="#C61F32" d="M21 4C12.5 4 5 10 5 19c0 9 6.5 15 13.5 18C27.5 34 35 28 35 19 35 10 29.5 4 21 4z" />
+      <circle cx="17" cy="15.5" r="5.2" fill="none" stroke="#fff" strokeWidth="3" />
+      <g fill="#245A80" stroke="#fff" strokeWidth="1">
+        <circle cx="28" cy="14.5" r="2.2" />
+        <circle cx="28" cy="20.5" r="2.2" />
+        <circle cx="28" cy="26.5" r="2.2" />
+      </g>
     </svg>
   );
 }

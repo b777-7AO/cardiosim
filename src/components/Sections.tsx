@@ -3,18 +3,18 @@ import { TBC, contact, faqs, specs } from "@/config/site";
 import { Logo } from "./Logo";
 import { Picture } from "./Picture";
 
-const benefits = [
+const points = [
   {
-    title: "Anatomical detail",
-    text: "Anatomical folds and contours modelled in three dimensions, in deep red silicone with one white central vessel.",
+    title: "A training object",
+    text: "CardioSim is a simplified, heart-shaped model with a moulded surface. It is made for practising technique, not as an anatomical replica.",
   },
   {
-    title: "Hands-on suturing practice",
+    title: "Hands-on practice",
     text: "A physical model to hold, turn and stitch, so technique is rehearsed by hand rather than on a screen.",
   },
   {
-    title: "Flexible training environments",
-    text: "Made for use outside the clinical environment: at home, in a university laboratory or in a training facility.",
+    title: "Outside the operating room",
+    text: "For doctors, medical students and healthcare professionals, at home or in a training setting.",
   },
 ];
 
@@ -26,7 +26,7 @@ export function Intro() {
           <figure className="overflow-hidden rounded-2xl bg-paper">
             <Picture
               name="heart-presentation"
-              alt="CardioSim silicone heart resting on a white laboratory surface"
+              alt="CardioSim practice model standing on a white surface: red heart shape with a white central vessel"
               width={1168}
               height={880}
               className="h-auto w-full"
@@ -34,13 +34,12 @@ export function Intro() {
           </figure>
           <div className="mt-4 grid grid-cols-[1fr_auto] items-start gap-6">
             <p className="max-w-[24rem] text-[0.8125rem] leading-relaxed text-mute">
-              Product visualisation. The red body and the single white central vessel are shown as specified for the
-              production model.
+              Studio visualisation based on photographs of the actual model.
             </p>
-            <figure className="-mt-20 w-36 overflow-hidden rounded-xl border-4 border-white sm:-mt-28 sm:w-56">
+            <figure className="-mt-10 w-32 overflow-hidden rounded-xl border-4 border-white sm:-mt-12 sm:w-48">
               <Picture
                 name="heart-macro"
-                alt="Close-up of the red silicone surface with raised vessels"
+                alt="Close-up of the red silicone surface with the white line on the front"
                 width={1168}
                 height={880}
                 className="aspect-[4/3] h-auto w-full object-cover"
@@ -50,13 +49,13 @@ export function Intro() {
         </div>
 
         <div className="lg:col-span-4 lg:col-start-9 lg:pt-4">
-          <h2 className="h-section">Designed for deliberate practice.</h2>
+          <h2 className="h-section">Made for practice.</h2>
           <p className="lede mt-6">
-            CardioSim is a reusable anatomical silicone heart for cardiovascular suturing practice. It gives doctors,
-            surgeons and students a model to rehearse stitching technique on, as often as they choose.
+            CardioSim is a silicone heart model for practising suturing and stitching technique: a red body, one large
+            white vessel opening at the top and a white line down the front.
           </p>
           <dl className="mt-10">
-            {benefits.map((b) => (
+            {points.map((b) => (
               <div key={b.title} className="border-t border-line py-5 last:border-b">
                 <dt className="font-medium tracking-[-0.01em]">{b.title}</dt>
                 <dd className="mt-1.5 text-[0.9375rem] leading-relaxed text-mute">{b.text}</dd>
@@ -71,10 +70,10 @@ export function Intro() {
 
 export function Specs() {
   return (
-    <section id="specifications" className="py-20 lg:py-32">
+    <section id="details" className="border-t border-line py-20 lg:py-32">
       <div className="frame grid gap-x-8 gap-y-10 lg:grid-cols-12">
         <div className="lg:col-span-4">
-          <h2 className="h-section">Product specifications</h2>
+          <h2 className="h-section">Product details</h2>
           <p className="lede mt-6 max-w-[22rem]">
             Entries marked “{TBC}” are being finalised by the product team and will be published here.
           </p>
@@ -134,7 +133,7 @@ export function Footer() {
         <div>
           <Logo />
           <p className="mt-4 max-w-[20rem] text-sm leading-relaxed text-mute">
-            Anatomical silicone heart models for surgical suturing practice.
+            Silicone heart model for suturing practice outside the operating room.
           </p>
         </div>
         <ul className="grid grid-cols-2 gap-x-10 gap-y-3 text-sm sm:flex sm:flex-wrap">

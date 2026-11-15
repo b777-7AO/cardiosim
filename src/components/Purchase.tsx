@@ -68,7 +68,7 @@ export function Purchase() {
         <figure className="grid place-items-center rounded-2xl border border-line bg-white p-6 lg:col-span-6">
           <Picture
             name="heart-hero"
-            alt="CardioSim Anatomical Silicone Heart, front view"
+            alt="CardioSim Heart Suturing Practice Model, front view"
             width={1024}
             height={1024}
             className="h-auto w-full max-w-[30rem]"
@@ -77,7 +77,7 @@ export function Purchase() {
 
         <div className="lg:col-span-5 lg:col-start-8">
           <h2 className="text-[clamp(1.75rem,2.5vw,2.25rem)] font-medium leading-[1.12] tracking-[-0.028em] text-balance">
-            CardioSim Anatomical Silicone Heart
+            CardioSim Heart Suturing Practice Model
           </h2>
 
           <div className="mt-7 flex flex-wrap items-baseline gap-x-4 gap-y-2">

@@ -8,8 +8,8 @@ import { IconBag, IconClose, IconMenu } from "./Icons";
 
 const links = [
   { href: "/#product", label: "Product" },
-  { href: "/#explorer", label: "3D Explorer" },
-  { href: "/#specifications", label: "Specifications" },
+  { href: "/#explorer", label: "3D View" },
+  { href: "/#details", label: "Details" },
   { href: "/#faq", label: "FAQ" },
 ];
 
@@ -65,7 +65,7 @@ export function Nav() {
               )}
             </button>
             <Link href="/#order" className="btn btn-red btn-sm">
-              Order Now
+              Buy Now
             </Link>
             <button
               type="button"

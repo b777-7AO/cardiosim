@@ -1,6 +1,8 @@
 # CardioSim
 
-Single-product website for the CardioSim Anatomical Silicone Heart: interactive 3D viewer, product page, cart and checkout-ready architecture.
+Single-product website for the CardioSim heart suturing practice model: interactive 3D viewer, practice areas, product details, cart and checkout-ready architecture.
+
+The real product is the source of truth. Photographs of it are in `creative/product-photos/` (kept local, not committed); every picture and the 3D model on the site are derived from them.
 
 Next.js (App Router, static export), TypeScript, Tailwind CSS, Three.js with React Three Fiber and Drei.
 
@@ -20,9 +22,10 @@ Everything unconfirmed lives in **`src/config/site.ts`** and renders as "To be c
 | Price, currency, availability, shipping note | `product` |
 | Support email, legal name, address | `contact` |
 | Live payment | `checkout.stripePaymentLink` |
-| Material grade, dimensions, weight, included components, care | `specs` |
-| Suture areas and their training purpose | `sutureMarkers` |
-| Close-up views in the explorer | `detailViews` |
+| Material grade, included items, care, dimensions, weight | `specs` |
+| Practice areas (all marked illustrative until `validated: true`) | `sutureMarkers` |
+| Views in the 3D explorer | `detailViews` |
+| Dot positions on the practice-areas picture | `dots` in `src/components/PracticeAreas.tsx` |
 
 Legal text (shipping, privacy controller, terms) is in `src/app/[slug]/page.tsx`.
 
@@ -50,13 +53,15 @@ The viewer loads `public/models/cardiosim-heart.glb`. To swap it:
 
 Nothing else changes. The viewer centres and scales any model, applies the silicone material to its textures, and places the suture markers by raycasting onto the new surface (see the comment on `sutureMarkers`).
 
-**About the current model:** `creative/models/heart-tripo.glb` was generated with Higgsfield (Tripo H3.1) from the reference render. It is a visualisation of the specified product (red body, one white central vessel), not a scan of the manufactured part. Replace it with the production CAD or scan when available.
+4. If the GLB is a colour-accurate scan, set `MODEL_RECOLOR` to `null` so its own colours are shown.
+
+**About the current model:** `creative/models/cardiosim-hunyuan3d.glb` was generated with Higgsfield (Hunyuan3D v3) from studio versions of the front and back product photographs. It follows the real shape (white cylinder, white line, top stubs, banded back, open top) but it is a reconstruction, not a scan: the underside and small details are approximated, and there is a small stray fin at the lower right edge. `MODEL_RECOLOR` snaps its texture to the product's two real colours. Replace it with a photogrammetry scan or the print/mould CAD file when available.
 
 ## Replacing images
 
 Source images are in `creative/reference/`. Put the new file there under the same name and run `node scripts/build-images.mjs`. It writes the WebP/AVIF files the site uses to `public/images`.
 
-The current pictures are Higgsfield renders, captioned on the site as product visualisation. Prompts for the full campaign, including video, are in `creative/higgsfield-prompts.md`.
+The current pictures are Higgsfield studio versions of the real product photographs (same object, white studio setting), captioned on the site as studio visualisation. The first concept round, made before the real photographs existed, is archived in `creative/reference/v1-concept/` and `creative/models/v1-concept/` and is not used. Prompts for the full campaign, including video, are in `creative/higgsfield-prompts.md`.
 
 ## Brand
 
@@ -69,6 +74,7 @@ The current pictures are Higgsfield renders, captioned on the site as product vi
 src/config/site.ts            product data, specs, FAQ, markers, views
 src/components/heart/         3D viewer (HeartCanvas) and lazy loader
 src/components/Explorer.tsx   3D explorer section with controls and markers
+src/components/PracticeAreas.tsx  annotated picture and list of practice areas
 src/components/Purchase.tsx   order section
 src/components/Cart.tsx       cart drawer and checkout step
 src/lib/cart.tsx              cart state (saved in the browser)

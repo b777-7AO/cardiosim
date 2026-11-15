@@ -44,7 +44,7 @@ const policies: Record<string, Policy> = {
   },
   "shipping-returns": {
     title: "Shipping & Returns",
-    intro: "Delivery and return terms for the CardioSim Anatomical Silicone Heart.",
+    intro: "Delivery and return terms for the CardioSim Heart Suturing Practice Model.",
     blocks: [
       { heading: "Delivery regions and times", body: pending("Shipping destinations and delivery times.") },
       { heading: "Shipping costs", body: pending("Shipping costs per destination.") },

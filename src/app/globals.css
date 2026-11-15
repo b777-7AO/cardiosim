@@ -4,10 +4,10 @@
   --color-white: #ffffff;
   --color-paper: #f8fafc;
   --color-ink: #17212b;
-  --color-mute: #697680;
-  --color-line: #e5eaf0;
-  --color-red: #bc2435;
-  --color-red-deep: #a01d2c;
+  --color-mute: #66727f;
+  --color-line: #e7ecf1;
+  --color-red: #c61f32;
+  --color-red-deep: #a81829;
   --color-blue: #245a80;
   --font-sans: var(--font-geist-sans), "Helvetica Neue", Arial, sans-serif;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -47,8 +47,8 @@ body {
 }
 
 .h-display {
-  font-size: clamp(2.75rem, 5.6vw, 4.75rem);
-  line-height: 1.02;
+  font-size: clamp(2.5rem, 4.6vw, 4rem);
+  line-height: 1.04;
   letter-spacing: -0.04em;
   font-weight: 500;
 }
