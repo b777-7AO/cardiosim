@@ -115,8 +115,8 @@ export const sutureMarkers: SutureMarker[] = [
     name: "Central white vessel",
     kind: "Potential suturing zone",
     description: "The open white cylinder at the top centre of the model, with a free rim all the way round.",
-    from: [0, 35],
-    aim: [0.0, 0.78, 0.2],
+    from: [-4, 12],
+    aim: [-0.03, 0.74, 0],
     validated: false,
   },
   {
@@ -222,6 +222,13 @@ export const detailViews: DetailView[] = [
     showMarkers: true,
   },
 ];
+
+/**
+ * Procedural surface grain for the silicone. `density` is grain cells per
+ * world unit (the model is about 2 units across), `depth` the bump strength.
+ * Set to null when the GLB already carries the real surface in its normal map.
+ */
+export const MODEL_GRAIN: { density: number; depth: number } | null = { density: 24, depth: 0.007 };
 
 /** Path of the 3D model inside /public. Replace the file to swap the model. */
 export const MODEL_PATH = "/models/cardiosim-heart.glb";

@@ -55,7 +55,7 @@ Nothing else changes. The viewer centres and scales any model, applies the silic
 
 4. If the GLB is a colour-accurate scan, set `MODEL_RECOLOR` to `null` so its own colours are shown.
 
-**About the current model:** `creative/models/cardiosim-hunyuan3d.glb` was generated with Higgsfield (Hunyuan3D v3) from studio versions of the front and back product photographs. It follows the real shape (white cylinder, white line, top stubs, banded back, open top) but it is a reconstruction, not a scan: the underside and small details are approximated, and there is a small stray fin at the lower right edge. `MODEL_RECOLOR` snaps its texture to the product's two real colours. Replace it with a photogrammetry scan or the print/mould CAD file when available.
+**About the current model:** `creative/models/cardiosim-hunyuan3d.glb` was generated with Higgsfield (Hunyuan3D v3) from studio versions of the front and back product photographs. It follows the real shape (white cylinder, white line, top stubs, banded back, open top) but it is a reconstruction, not a scan: the underside and small details are approximated, and the open hole at the back of the top is not fully cut through. `MODEL_RECOLOR` snaps its texture to the product's two real colours. Replace it with a photogrammetry scan or the print/mould CAD file when available.
 
 ## Replacing images
 

@@ -8,7 +8,7 @@ import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber"
 import { ContactShadows, Environment, Lightformer, useGLTF } from "@react-three/drei";
 import { Suspense, useEffect, useImperativeHandle, useMemo, useRef, useState, type Ref } from "react";
 import * as THREE from "three";
-import { MODEL_PATH, MODEL_RECOLOR, MODEL_YAW_DEG, asset, sutureMarkers, type SutureMarker } from "@/config/site";
+import { MODEL_GRAIN, MODEL_PATH, MODEL_RECOLOR, MODEL_YAW_DEG, asset, sutureMarkers, type SutureMarker } from "@/config/site";
 
 /**
  * Interactive viewer for the CardioSim heart.
@@ -133,35 +133,100 @@ function Heart({
         map: src.map ?? null,
         color: src.map ? 0xffffff : src.color,
         normalMap: src.normalMap ?? null,
-        normalScale: new THREE.Vector2(1.5, 1.5),
-        roughness: 0.58,
+        normalScale: new THREE.Vector2(1.6, 1.6),
+        roughness: 0.56,
         metalness: 0,
-        clearcoat: 0.12,
-        clearcoatRoughness: 0.6,
-        envMapIntensity: 0.45,
+        envMapIntensity: 0.55,
       });
-      // The product has exactly two colours. A generated texture drifts
-      // (washed red, pink-tinted white), so each texel is snapped to the real
-      // red or the real white by its saturation, keeping the texture's shading.
-      if (MODEL_RECOLOR && src.map) {
-        const red = new THREE.Color(MODEL_RECOLOR.red);
-        const white = new THREE.Color(MODEL_RECOLOR.white);
-        const v3 = (c: THREE.Color) => `vec3(${c.r.toFixed(4)}, ${c.g.toFixed(4)}, ${c.b.toFixed(4)})`;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+
+      // Two shader additions, both off when their config is null:
+      //  - recolour: the product has exactly two colours. A generated texture
+      //    drifts (washed red, pink-tinted white), so each texel is snapped to
+      //    the real red or white by its saturation, keeping its shading.
+      //  - grain: the fine moulded surface texture of the silicone, added as a
+      //    procedural bump so close-ups stay sharp at any zoom.
+      const recolor = MODEL_RECOLOR && src.map ? MODEL_RECOLOR : null;
+      const grain = MODEL_GRAIN;
+      if (recolor || grain) {
+        const v3 = (hex: string) => {
+          const c = new THREE.Color(hex);
+          return `vec3(${c.r.toFixed(4)}, ${c.g.toFixed(4)}, ${c.b.toFixed(4)})`;
+        };
+        const grainFreq = grain ? (grain.density * s).toFixed(4) : "1.0";
         mat.onBeforeCompile = (shader) => {
-          shader.fragmentShader = shader.fragmentShader.replace(
-            "#include <map_fragment>",
-            `#include <map_fragment>
-            {
-              vec3 c = diffuseColor.rgb;
-              float mx = max(c.r, max(c.g, c.b));
-              float mn = min(c.r, min(c.g, c.b));
-              float sat = (mx - mn) / max(mx, 1e-4);
-              float isRed = smoothstep(0.4, 0.62, sat);
-              vec3 asRed = ${v3(red)} * clamp(0.55 + 0.55 * mx, 0.7, 1.08);
-              vec3 asWhite = ${v3(white)} * clamp(0.35 + 0.7 * mn, 0.75, 1.0);
-              diffuseColor.rgb = mix(asWhite, asRed, isRed);
-            }`,
-          );
+          shader.vertexShader = shader.vertexShader
+            .replace("#include <common>", "#include <common>\nvarying vec3 csObjPos;")
+            .replace("#include <begin_vertex>", "#include <begin_vertex>\ncsObjPos = position;");
+          shader.fragmentShader = shader.fragmentShader
+            .replace(
+              "#include <common>",
+              `#include <common>
+              varying vec3 csObjPos;
+              float csIsRed = 1.0;
+              vec3 csHash3(vec3 p) {
+                p = vec3(dot(p, vec3(127.1, 311.7, 74.7)), dot(p, vec3(269.5, 183.3, 246.1)), dot(p, vec3(113.5, 271.9, 124.6)));
+                return fract(sin(p) * 43758.5453123);
+              }
+              // Distance to the nearest cell point: reads as a pebbled grain.
+              float csCells(vec3 p) {
+                vec3 i = floor(p);
+                vec3 f = fract(p);
+                float d = 1.0;
+                for (int x = -1; x <= 1; x++)
+                  for (int y = -1; y <= 1; y++)
+                    for (int z = -1; z <= 1; z++) {
+                      vec3 g = vec3(float(x), float(y), float(z));
+                      vec3 r = g + csHash3(i + g) - f;
+                      d = min(d, dot(r, r));
+                    }
+                return sqrt(d);
+              }
+              float csHeight(vec3 p) {
+                float coarse = 1.0 - smoothstep(0.0, 0.85, csCells(p));
+                float fine = 1.0 - smoothstep(0.0, 0.9, csCells(p * 2.3 + 7.1));
+                return coarse * 0.65 + fine * 0.35;
+              }`,
+            )
+            .replace(
+              "#include <map_fragment>",
+              recolor
+                ? `#include <map_fragment>
+                {
+                  vec3 c = diffuseColor.rgb;
+                  float mx = max(c.r, max(c.g, c.b));
+                  float mn = min(c.r, min(c.g, c.b));
+                  float sat = (mx - mn) / max(mx, 1e-4);
+                  csIsRed = smoothstep(0.5, 0.63, sat);
+                  vec3 asRed = ${v3(recolor.red)} * clamp(0.5 + 0.62 * mx, 0.62, 1.1);
+                  vec3 asWhite = ${v3(recolor.white)} * clamp(0.35 + 0.7 * mn, 0.75, 1.0);
+                  diffuseColor.rgb = mix(asWhite, asRed, csIsRed);
+                }`
+                : "#include <map_fragment>",
+            )
+            .replace(
+              "#include <normal_fragment_maps>",
+              grain
+                ? `#include <normal_fragment_maps>
+                {
+                  vec3 q = csObjPos * ${grainFreq};
+                  // Fade the grain out before it gets smaller than a pixel.
+                  float fade = 1.0 - smoothstep(0.3, 0.8, length(fwidth(q)));
+                  if (fade > 0.0) {
+                    float h = csHeight(q);
+                    vec3 sx = dFdx(-vViewPosition);
+                    vec3 sy = dFdy(-vViewPosition);
+                    vec3 r1 = cross(sy, normal);
+                    vec3 r2 = cross(normal, sx);
+                    float det = dot(sx, r1) * faceDirection;
+                    float amount = ${grain.depth.toFixed(4)} * fade * mix(0.45, 1.0, csIsRed);
+                    vec3 grad = sign(det) * (dFdx(h) * r1 + dFdy(h) * r2) * amount;
+                    normal = normalize(abs(det) * normal - grad);
+                  }
+                }`
+                : "#include <normal_fragment_maps>",
+            );
         };
       }
       mesh.material = mat;
@@ -371,17 +436,28 @@ function Bounds({ half }: { half: THREE.Vector3 }) {
 function Studio() {
   return (
     <>
-      <ambientLight intensity={0.18} />
-      <directionalLight position={[-3.5, 4.5, 4]} intensity={1.25} />
-      <directionalLight position={[4, 1.5, 2.5]} intensity={0.35} />
-      <directionalLight position={[0, 3, -5]} intensity={0.4} />
+      <ambientLight intensity={0.08} />
+      {/* Key light casts soft shadows so ridges, stubs and the open top read as depth. */}
+      <directionalLight
+        position={[-3.2, 4.6, 4.2]}
+        intensity={1.55}
+        castShadow
+        shadow-mapSize={[2048, 2048]}
+        shadow-bias={-0.0006}
+        shadow-normalBias={0.03}
+        shadow-radius={6}
+      >
+        <orthographicCamera attach="shadow-camera" args={[-1.7, 1.7, 1.7, -1.7, 1, 14]} />
+      </directionalLight>
+      <directionalLight position={[4, 1.5, 2.5]} intensity={0.3} />
+      <directionalLight position={[0, 3, -5]} intensity={0.55} />
       {/* Procedural softbox studio: no HDR download. */}
       <Environment resolution={256} frames={1}>
         <color attach="background" args={["#f1f3f5"]} />
         <Lightformer form="rect" intensity={3.2} position={[-4, 4, 3]} scale={[6, 6, 1]} target={[0, 0, 0]} />
         <Lightformer form="rect" intensity={1.4} position={[5, 1, 2]} scale={[3, 7, 1]} target={[0, 0, 0]} />
         <Lightformer form="rect" intensity={1.8} position={[0, 6, -2]} scale={[8, 3, 1]} target={[0, 0, 0]} />
-        <Lightformer form="rect" intensity={0.8} position={[0, -5, 0]} scale={[10, 10, 1]} target={[0, 0, 0]} />
+        <Lightformer form="rect" intensity={0.3} position={[0, -5, 0]} scale={[10, 10, 1]} target={[0, 0, 0]} />
       </Environment>
     </>
   );
@@ -536,6 +612,7 @@ export default function HeartCanvas({
     >
       <Canvas
         dpr={[1, 2]}
+        shadows
         frameloop={active ? "demand" : "never"}
         camera={{ fov: 24, near: 0.1, far: 50, position: [0, 0.15, BASE_DIST] }}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
