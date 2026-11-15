@@ -231,7 +231,7 @@ export const detailViews: DetailView[] = [
 export const MODEL_GRAIN: { density: number; depth: number } | null = { density: 24, depth: 0.007 };
 
 /** Path of the 3D model inside /public. Replace the file to swap the model. */
-export const MODEL_PATH = "/models/cardiosim-heart.glb";
+export const MODEL_PATH = "/models/cardiosim-heart.glb?v=3"; // bump ?v= when the file changes, so browsers drop the cached copy
 
 /** Degrees to turn the raw model about its vertical axis so the front faces the viewer. */
 export const MODEL_YAW_DEG = 0;
